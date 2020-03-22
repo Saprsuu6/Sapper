@@ -1,4 +1,4 @@
-// comment
+// снова добавил коммент
 #include <iostream>
 #include <Windows.h>
 #include <ctime>
