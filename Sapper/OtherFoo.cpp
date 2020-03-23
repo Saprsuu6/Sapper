@@ -114,7 +114,6 @@ int Complexity(HANDLE &h) {
 	int complexity;
 	DrawSet();
 	cin >> complexity;
-	system("cls");
 	if (complexity == 1) 
 		return 1;
 	else if (complexity == 2)
@@ -159,35 +158,37 @@ bool Start(int &enter, int &space, int &esc) {
 		return false;
 }
 
-void CreateMass(const int* const ar_hight, const int* const ar_width) {
-	int** ar = new int* [*ar_width];
-	for (int i = 0; i < *ar_width; i++) 
-		ar[i] = new int[*ar_hight];
-	FillMass(&ar, &ar_hight, &ar_width);
+void CreateMass(const int ar_hight, const int ar_width) {
+	int** ar = new int* [ar_width];
+	for (int i = 0; i < ar_width; i++) 
+		ar[i] = new int[ar_hight];
+	FillMass(ar, ar_hight, ar_width);
 }
 
-void FillMass(int*** ar, const int* const* ar_hight, const int* const* ar_width) {
+void FillMass(int** ar, const int ar_hight, const int ar_width) {
 	int EMPTY = 0, BOMB = 9;
-	for (int i = 0; i < **ar_hight; i++) {
-		for (int j = 0; j < **ar_width; j++) {
+	for (int i = 0; i < ar_hight; i++) {
+		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
 			if (random < 21)
-				*ar[i][j] = BOMB;
+				ar[i][j] = BOMB;
 			else 
-				*ar[i][j] = EMPTY;
+				ar[i][j] = EMPTY;
 		}
 	}
-	ShowMass(&ar, &ar_hight, &ar_width);
+	ShowMass(ar, ar_hight, ar_width);
 	/*GamePlay(&ar, &pr_hight, &pr_width);*/
 }
 
-void ShowMass(int**** ar, const int* const** ar_hight, const int* const** ar_width) {
-	for (int i = 0; i < ***ar_hight; i++) {
-		for (int j = 0; j < ***ar_width; j++) {
+void ShowMass(int** ar, const int ar_hight, const int ar_width) {
+	system("cls");
+	for (int i = 0; i < ar_hight; i++) {
+		for (int j = 0; j < ar_width; j++) {
 			cout << ar[i][j];
 		}
 		cout << endl;
 	}
+	delete[]ar;
 }
 
 //void GamePlay(int*** const ar, const int*** pr_hight, const int*** pr_width) {

@@ -25,23 +25,24 @@ int main() {
 	if (Start(enter, space, esc)) { // пункты меню
 		system("cls");
 		int value = Complexity(h); // выбор сложности
+		system("cls");
 		if (value == 1) {
 			const int ar_hight = 10;
 			const int ar_width = 20;
 			Load(h, load_x, load_y);
-			CreateMass(&ar_hight, &ar_width);
+			CreateMass(ar_hight, ar_width);
 		}
 		else if (value == 2) {
 			const int ar_hight = 15;
 			const int ar_width = 30;
 			Load(h, load_x, load_y);
-			CreateMass(&ar_hight, &ar_width);
+			CreateMass(ar_hight, ar_width);
 		}
 		else if (value == 3) {
 			const int ar_hight = 20;
 			const int ar_width = 40;
 			Load(h, load_x, load_y);
-			CreateMass(&ar_hight, &ar_width);
+			CreateMass(ar_hight, ar_width);
 		}
 	}
 	else if (!Start(enter, space, esc)) { // пункты меню
