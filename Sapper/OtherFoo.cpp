@@ -1,22 +1,22 @@
 // dont forget about delete [] ar
 #include "Header.h"
 
-void Setings(HANDLE &h) {
+void Setings(HANDLE* pr_h) {
 	system("mode con cols=87 lines=23");
 	system("title Sapper");
 	CONSOLE_CURSOR_INFO info;
 	info.bVisible = false;
 	info.dwSize = 100;
-	SetConsoleCursorInfo(h, &info);
+	SetConsoleCursorInfo(*pr_h, &info);
 	system("color 32");
 	srand(time(0));
 }
 
-void Draw(HANDLE &h, int &colors, int &x, int &y, int &width, int &hight, char &ch) {
+void Draw(HANDLE* pr_h, int* pr_colors, int x, int y, int width, int hight, char ch) {
 	COORD frame{ x, y };
-	SetConsoleTextAttribute(h, colors);
+	SetConsoleTextAttribute(*pr_h, *pr_colors);
 	for (int i = 0; i < hight; i++) {
-		SetConsoleCursorPosition(h, frame);
+		SetConsoleCursorPosition(*pr_h, frame);
 		for (int j = 0; j < width; j++) {
 			if (i == 0 && j == 0)
 				cout << char(218);
@@ -73,10 +73,10 @@ void DrawSet() {
 	setlocale(0, "C");
 }
 
-void Load(HANDLE &h, int &width, int &hight) {
+void Load(HANDLE** pr_h, int width, int hight) {
 	COORD frame{ 22,8 };
 	for (int i = 0; i < hight; i++) {
-		SetConsoleCursorPosition(h, frame);
+		SetConsoleCursorPosition(**pr_h, frame);
 		for (int j = 0; j < width; j++) {
 			if (i == 0 && j == 0)
 				cout << char(218);
@@ -96,12 +96,12 @@ void Load(HANDLE &h, int &width, int &hight) {
 		frame.Y++;
 	}
 	frame.X = 37, frame.Y = 9;
-	SetConsoleCursorPosition(h, frame);
+	SetConsoleCursorPosition(**pr_h, frame);
 	setlocale(0, "RUS");
 	cout << "Загрузка...";
 	setlocale(0, "C");
 	frame.X = 23, frame.Y = 9;
-	SetConsoleCursorPosition(h, frame);
+	SetConsoleCursorPosition(**pr_h, frame);
 	for (int i = 0; i < width - 2; i++) {
 		int random = rand() % 200 + 50;
 		cout << char(178);
@@ -110,36 +110,48 @@ void Load(HANDLE &h, int &width, int &hight) {
 	}
 }
 
-int Complexity(HANDLE &h) {
+void Complexity(HANDLE* pr_h, int enter) {
 	int complexity;
 	DrawSet();
 	cin >> complexity;
 	system("cls");
-	if (complexity == 1) 
-		return 1;
-	else if (complexity == 2)
-		return 2;
-	else if (complexity == 3)
-		return 3;
+	if (complexity == 1) {
+		Load(&pr_h, 40, 3);
+		const int ar_hight = 10;
+		const int ar_width = 20;
+		CreateMass(&ar_hight, &ar_width);
+	}
+	else if (complexity == 2) {
+		Load(&pr_h, 40, 3);
+		const int ar_hight = 15;
+		const int ar_width = 30;
+		CreateMass(&ar_hight, &ar_width);
+	}
+	else if (complexity == 3) {
+		Load(&pr_h, 40, 3);
+		const int ar_hight = 20;
+		const int ar_width = 40;
+		CreateMass(&ar_hight, &ar_width);;
+	}
 	else
 		main();
 }
 
-void Text(HANDLE &h, int &colors, int &x, int &y) {
+void Text(HANDLE* pr_h, int* pr_colors, int x, int y) {
 	COORD text{ x,y };
-	SetConsoleTextAttribute(h, colors);
-	SetConsoleCursorPosition(h, text);
+	SetConsoleTextAttribute(*pr_h, *pr_colors);
+	SetConsoleCursorPosition(*pr_h, text);
 	cout << "Нажмите ENTER для начала игры";
 	text.Y += 3;
-	SetConsoleCursorPosition(h, text);
+	SetConsoleCursorPosition(*pr_h, text);
 	cout << "Нажмите SPACE что бы прочитать инструкцию";
 	text.Y += 3;
-	SetConsoleCursorPosition(h, text);
+	SetConsoleCursorPosition(*pr_h, text);
 	cout << "Нажмите ESCAPE для выхода";
 }
 
 
-bool Start(int &enter, int &space, int &esc) {
+bool Start(int enter, int space, int esc) {
 	int code = _getch();
 	if (code == 224)
 		code = _getch();
@@ -159,54 +171,39 @@ bool Start(int &enter, int &space, int &esc) {
 		return false;
 }
 
-void CreateMass(const int* const ar_hight, const int* const ar_width) {
-	int** ar = new int* [*ar_width];
-	for (int i = 0; i < *ar_width; i++) 
-		ar[i] = new int[*ar_hight];
-	FillMass(&ar, &ar_hight, &ar_width);
+void CreateMass(const int* pr_hight, const int* pr_width) {
+	int** ar = new int* [*pr_width];
+	for (int i = 0; i < *pr_width; i++) 
+		ar[i] = new int[*pr_hight];
+	FillMass(&ar, &pr_hight, &pr_width);
 }
 
-void FillMass(int*** ar, const int* const* ar_hight, const int* const* ar_width) {
-	int EMPTY = 0, BOMB = 9;
-	for (int i = 0; i < **ar_hight; i++) {
-		for (int j = 0; j < **ar_width; j++) {
+void FillMass(int*** pr_ar, const int** pr_hight, const int** pr_width) {
+	int EMPTY, BOMB = 9;
+	for (int i = 0; i < **pr_hight; i++) {
+		for (int j = 0; j < **pr_width; j++) {
 			int random = rand() % 101;
 			if (random < 21)
-				*ar[i][j] = BOMB;
+				*pr_ar[i][j] = BOMB;
 			else 
-				*ar[i][j] = EMPTY;
+				*pr_ar[i][j] = EMPTY;
 		}
 	}
-	ShowMass(&ar, &ar_hight, &ar_width);
-	/*GamePlay(&ar, &pr_hight, &pr_width);*/
+	GamePlay(&pr_ar, &pr_hight, &pr_width);
 }
 
-void ShowMass(int**** ar, const int* const** ar_hight, const int* const** ar_width) {
-	for (int i = 0; i < ***ar_hight; i++) {
-		for (int j = 0; j < ***ar_width; j++) {
-			cout << ar[i][j];
+void GamePlay(int**** pr_ar, const int*** pr_hight, const int*** pr_width) {
+	COORD mouse;
+	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
+	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
+	const int events = 256;
+	INPUT_RECORD all_events[events];
+	DWORD read_events;
+	while (true) {
+		ReadConsoleInput(h_in, all_events, events, &read_events);
+		for (int i = 0; i < read_events; i++) {
+			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
+			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
 		}
-		cout << endl;
 	}
 }
-
-//void GamePlay(int*** const ar, const int*** pr_hight, const int*** pr_width) {
-//	for (int i = 0; i < ***pr_hight; i++) {
-//		for (int j = 0; j < ***pr_width; j++) {
-//			cout << ar[i][j];
-//		}
-//	}
-//	COORD mouse;
-//	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
-//	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
-//	const int events = 256;
-//	INPUT_RECORD all_events[events];
-//	DWORD read_events;
-//	while (true) {
-//		ReadConsoleInput(h_in, all_events, events, &read_events);
-//		for (int i = 0; i < read_events; i++) {
-//			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
-//			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
-//		}
-//	}
-//}
