@@ -1,3 +1,4 @@
+// dont forget about delete [] ar
 #include"Header.h"
 
 int main() {

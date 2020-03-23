@@ -1,3 +1,4 @@
+// dont forget about delete [] ar
 #include "Header.h"
 
 void Setings(HANDLE* pr_h) {
@@ -118,16 +119,19 @@ void Complexity(HANDLE* pr_h, int enter) {
 		Load(&pr_h, 40, 3);
 		const int ar_hight = 10;
 		const int ar_width = 20;
+		CreateMass(&ar_hight, &ar_width);
 	}
 	else if (complexity == 2) {
 		Load(&pr_h, 40, 3);
 		const int ar_hight = 15;
 		const int ar_width = 30;
+		CreateMass(&ar_hight, &ar_width);
 	}
 	else if (complexity == 3) {
 		Load(&pr_h, 40, 3);
 		const int ar_hight = 20;
 		const int ar_width = 40;
+		CreateMass(&ar_hight, &ar_width);;
 	}
 	else
 		main();
@@ -165,4 +169,41 @@ bool Start(int enter, int space, int esc) {
 	}
 	else
 		return false;
+}
+
+void CreateMass(const int* pr_hight, const int* pr_width) {
+	int** ar = new int* [*pr_width];
+	for (int i = 0; i < *pr_width; i++) 
+		ar[i] = new int[*pr_hight];
+	FillMass(&ar, &pr_hight, &pr_width);
+}
+
+void FillMass(int*** pr_ar, const int** pr_hight, const int** pr_width) {
+	int EMPTY, BOMB = 9;
+	for (int i = 0; i < **pr_hight; i++) {
+		for (int j = 0; j < **pr_width; j++) {
+			int random = rand() % 101;
+			if (random < 21)
+				*pr_ar[i][j] = BOMB;
+			else 
+				*pr_ar[i][j] = EMPTY;
+		}
+	}
+	GamePlay(&pr_ar, &pr_hight, &pr_width);
+}
+
+void GamePlay(int**** pr_ar, const int*** pr_hight, const int*** pr_width) {
+	COORD mouse;
+	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
+	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
+	const int events = 256;
+	INPUT_RECORD all_events[events];
+	DWORD read_events;
+	while (true) {
+		ReadConsoleInput(h_in, all_events, events, &read_events);
+		for (int i = 0; i < read_events; i++) {
+			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
+			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
+		}
+	}
 }
