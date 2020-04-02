@@ -110,13 +110,14 @@ void Load(HANDLE &h, int width, int hight) {
 		frame.X++;
 		Sleep(random);
 	}
+	system("cls");
 }
 
 int Complexity(HANDLE &h) {
 	int complexity;
 	DrawSet();
 	cin >> complexity;
-	if (complexity == 1) 
+	if (complexity == 1)
 		return 1;
 	else if (complexity == 2)
 		return 2;
@@ -124,6 +125,7 @@ int Complexity(HANDLE &h) {
 		return 3;
 	else
 		main();
+	return complexity;
 }
 
 void Text(HANDLE &h, int colors, int x, int y) {
@@ -160,104 +162,134 @@ bool Start(int &enter, int &space, int &esc) {
 		return false;
 }
 
-void CreateMass(HANDLE &h) {
-	const int ar_hight = 18;
-	const int ar_width = 38;
-	int ar[ar_hight][ar_width];
+void CreateMass(HANDLE &h, int**&ar, int ar_hight, int ar_width) {
+	ar = new int*[ar_hight];
+	for (int i = 0; i < ar_hight; i++)
+		ar[i] = new int[ar_width];
 	FillMass(h, ar, ar_hight, ar_width);
 }
 
-void FillMass(HANDLE& h, int ar[][38], const int &ar_hight, const int &ar_width) {
+void FillMass(HANDLE& h, int**&ar, int ar_hight, int ar_width) {
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
-			if (random < 21)
-				ar[i][j] = 9;
-			else 
-				ar[i][j] = 0;
-			/*cout << ar[i][j];*/
+			if (random > 80)
+				ar[i][j] = 9; // бомба
+			else
+				ar[i][j] = 0; // пустота
 		}
-		/*cout << endl;*/
 	}
-	GamePlay(h, ar, ar_hight, ar_width);
+	ShowMass(h, ar, ar_hight, ar_width);
 }
 
-int AllBomb(int ar[][38], const int &ar_hight, const int &ar_width) {
-	int count_bomb = 0;
+void ShowMass(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+	COORD c{ 1,1 };
 	for (int i = 0; i < ar_hight; i++) {
+		SetConsoleCursorPosition(h, c);
+		for (int j = 0; j < ar_width; j++)
+			cout << ar[i][j];
+		c.Y++;
+	}
+}
+
+void ShowAll(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+	COORD show_all{ 1,1 };
+	for (int i = 0; i < ar_hight; i++) {
+		SetConsoleCursorPosition(h, show_all);
 		for (int j = 0; j < ar_width; j++) {
-			if (ar[i][j] == 9)
-				count_bomb++;
-		}
-	}
-	return count_bomb;
-}
-
-void IfBomb(HANDLE& h, int ar[][38], const int &ar_hight, const int &ar_width, int &x, int &y) {
-	if (ar[y][x] == 1) {
-		COORD show_all{ 1,1 };
-		for (int i = 0; i < ar_hight; i++) {
-			SetConsoleCursorPosition(h, show_all);
-			for (int j = 0; j < ar_width; j++) {
-				if (ar[i][j] == 9) {
-					SetConsoleTextAttribute(h, 14);
-					cout << char(15);
-				}
-				else if (ar[ar_hight][ar_width] > 0 && ar[ar_hight][ar_width] < 9) {
-					ChoseColor(h, ar, ar_hight, ar_width);
-					cout << ar[ar_hight][ar_width];
-				}
-				else
-					cout << " ";
+			if (ar[i][j] == 9) {
+				SetConsoleTextAttribute(h, 6);
+				cout << char(15);
 			}
-			show_all.Y++;
+			else if (ar[i][j] > 0 && ar[i][j] < 9) {
+				Choose_color(h, ar[i][j]);
+				cout << ar[i][j];
+			}
+			else
+				cout << " ";
 		}
-		LastMessage();
+		show_all.Y++;
 	}
 }
 
-void ChoseColor(HANDLE& h, int ar[][38], const int& ar_hight, const int& ar_width) {
-	if (ar[ar_hight][ar_width] == 1)
+void OpenAllEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+	COORD open_all_empty{ 1,1 };
+	for (int i = 0; i < ar_hight; i++) {
+		SetConsoleCursorPosition(h, open_all_empty);
+		for (int j = 0; j < ar_width; j++) {
+			if (ar[i][j] == 0)
+				CheckEmptyRadius(h, ar, ar_hight, ar_width, i, j, false);
+			else {
+				SetConsoleTextAttribute(h, 14);
+				cout << char(4);
+			}
+			Sleep(500);
+		}
+		open_all_empty.Y++;
+	}
+}
+
+void CheckEmptyRadius(HANDLE& h, int**& ar, int ar_hight, int ar_width, int p_i, int p_j, bool t_f) {
+	int empty = 0;
+	for (int i = p_i - 1; i <= p_i + 1; i++) { // поиск пустоты в радиусе 3х3
+		for (int j = p_j - 1; j <= p_j + 1; j++) { // поиск пустоты в радиусе 3х3
+			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width && ar[i][j] == 0) {
+				/*if (t_f == false)
+					empty++;
+				else
+					cout << " ";*/
+				empty++;
+				//Sleep(500);
+			}
+		}
+	}
+	SetConsoleTextAttribute(h, 13);
+	cout << empty;
+	Sleep(INFINITE);
+	/*if (empty == 9)
+		CheckEmptyRadius(h, ar, ar_hight, ar_width, x, y, true);*/
+}
+
+void SearchBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) { 
+	int count = 0;
+	for (int i = y - 1; i <= y + 1; i++) { // поиск бомбы в радиусе 3х3
+		for (int j = x - 1; j <= x + 1; j++) { // поиск бомбы в радиусе 3х3
+			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width && ar[i][j] == 9) 
+					count++;
+		}
+	}
+	if (count > 0) 
+		Write(h, ar, count, x, y);
+	else if (count == 0) 
+		OpenAllEmpty(h, ar, ar_hight, ar_width);
+}
+
+void Write(HANDLE& h, int**& ar, int count, int x, int y) {
+	ar[y][x] = count;
+	Choose_color(h, count);
+	cout << count;
+}
+
+void Choose_color(HANDLE& h, int count) {
+	if (count == 1)
 		SetConsoleTextAttribute(h, 9);
-	else if (ar[ar_hight][ar_width] == 2)
+	else if (count == 2)
 		SetConsoleTextAttribute(h, 10);
-	else if (ar[ar_hight][ar_width] == 3)
+	else if (count == 3)
 		SetConsoleTextAttribute(h, 4);
-	else if (ar[ar_hight][ar_width] == 4)
+	else if (count == 4)
 		SetConsoleTextAttribute(h, 1);
-	else if (ar[ar_hight][ar_width] == 5)
+	else if (count == 5)
 		SetConsoleTextAttribute(h, 12);
-	else if (ar[ar_hight][ar_width] == 6)
+	else if (count == 6)
 		SetConsoleTextAttribute(h, 11);
-	else if (ar[ar_hight][ar_width] == 7)
+	else if (count == 7)
 		SetConsoleTextAttribute(h, 13);
-	else if (ar[ar_hight][ar_width] == 8)
+	else if (count == 8)
 		SetConsoleTextAttribute(h, 8);
 }
 
-
-void LastMessage() {
-	int message = MessageBoxA(NULL, "Do you want to play again?", "You found all bombs", MB_YESNO);
-	if (message == IDYES) {
-		system("cls");
-		main();
-	}
-	else
-		system("taskkill /im Sapper_deluxe.exe");
-}
-
-void GamePlay(HANDLE &h, int ar[][38], const int &ar_hight, const int &ar_width) {
-	system("color 32");
-	Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4);
-	Draw(h, 14, 45, 0, 20, 5, 0);
-	COORD a{ 1,1 };
-	/*for (int i = 0; i < **ar_hight; i++) {
-		SetConsoleCursorPosition(h, a);
-		for (int j = 0; j < **ar_width; j++) {
-			cout << ar[i][j];
-		}
-		a.Y++;
-	}*/
+void GamePlay(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 	COORD mouse;
 	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -273,10 +305,11 @@ void GamePlay(HANDLE &h, int ar[][38], const int &ar_hight, const int &ar_width)
 			int y = mouse.Y - 1;
 			if (all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED
 				&& mouse.X > 0 && mouse.X < ar_width + 1 && mouse.Y > 0 && mouse.Y < ar_hight + 1) {
-				SetConsoleCursorPosition(h, mouse);
-
-				// если бомба то крышка
-				IfBomb(h, ar, ar_hight, ar_width, x, y);
+				if (ar[y][x] == 9) // если нажал на бомбу
+					ShowAll(h, ar, ar_hight, ar_width);
+				else if (ar[y][x] == 0) // если нажал на пусто поле
+					SetConsoleCursorPosition(h, mouse);
+					SearchBomb(h, ar, ar_hight, ar_width, x, y);
 			}
 		}
 	}
