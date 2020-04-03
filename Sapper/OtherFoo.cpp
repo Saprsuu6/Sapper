@@ -191,18 +191,18 @@ void FillMass(HANDLE& h, int**&ar, int ar_hight, int ar_width) {
 				ar[i][j] = 0; // пустота
 		}
 	}
-	//ShowMass(h, ar, ar_hight, ar_width);
+	ShowMass(h, ar, ar_hight, ar_width);
 }
 
-//void ShowMass(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-//	COORD c{ 1,1 };
-//	for (int i = 0; i < ar_hight; i++) {
-//		SetConsoleCursorPosition(h, c);
-//		for (int j = 0; j < ar_width; j++)
-//			cout << ar[i][j];
-//		c.Y++;
-//	}
-//}
+void ShowMass(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+	COORD c{ 1,1 };
+	for (int i = 0; i < ar_hight; i++) {
+		SetConsoleCursorPosition(h, c);
+		for (int j = 0; j < ar_width; j++)
+			cout << ar[i][j];
+		c.Y++;
+	}
+}
 
 void ShowAll(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 	COORD show_all{ 1,1 };
@@ -225,28 +225,32 @@ void ShowAll(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 	LastMessage(ar);
 }
 
-void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
-	COORD empty{ x,y };
-	for (int i = y - 1; i <= y + 3; i++) { // поиск пустоты в радиусе 3х3
-		SetConsoleCursorPosition(h, empty);
-		for (int j = x - 1; j <= x + 5; j++) { // поиск пустоты в радиусе 3х3
-			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width) {
-				if (ar[i][j] == 0) {
-					ar[i][j] = 11;
-					cout << " ";
-				}
-				else if (ar[i][j] > 0 && ar[i][j] < 9) {
-					Choose_color(h, ar[i][j]);
-					cout << ar[i][j];
-				}
-				else {
-					SetConsoleTextAttribute(h, 14);
-					cout << char(4);
-				}
-			}
-		}
-		empty.Y++;
-	}
+//void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
+//	COORD empty{ x,y };
+//	for (int i = y - 1; i <= y + 3; i++) { // поиск пустоты в радиусе 3х3
+//		SetConsoleCursorPosition(h, empty);
+//		for (int j = x - 1; j <= x + 5; j++) { // поиск пустоты в радиусе 3х3
+//			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width) {
+//				if (ar[i][j] == 0) {
+//					ar[i][j] = 11;
+//					cout << " ";
+//				}
+//				else if (ar[i][j] > 0 && ar[i][j] < 9) {
+//					Choose_color(h, ar[i][j]);
+//					cout << ar[i][j];
+//				}
+//				else {
+//					SetConsoleTextAttribute(h, 14);
+//					cout << char(4);
+//				}
+//			}
+//		}
+//		empty.Y++;
+//	}
+//}
+
+int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
+	
 }
 
 void SearchBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
@@ -260,7 +264,8 @@ void SearchBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) 
 	if (count > 0)
 		Write(h, ar, count, x, y);
 	else if (count == 0)
-		OpenEmpty(h, ar, ar_hight, ar_width, x - 2, y - 1);
+		OpenEmpty(h, ar, ar_hight, ar_width, x, y);
+		//OpenEmpty(h, ar, ar_hight, ar_width, x - 2, y - 1);
 }
 
 void Write(HANDLE& h, int**& ar, int count, int x, int y) {

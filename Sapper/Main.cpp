@@ -22,13 +22,13 @@ int main() {
 		system("cls");
 		int value = Complexity(h); // выбор сложности
 		system("cls");
-		system("color 32");
 		setlocale(0, "C");
+		//Load(h, 40, 3);
+		system("color 32");
 		int** ar = nullptr;
 		if (value == 1) {
 			int ar_hight = 10;
 			int ar_width = 20;
-			Load(h, 40, 3);
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
 			Draw(h, 14, ar_width + 5, 0, 16, 5, 0); // побочная рамка
 			CreateMass(h, ar, ar_hight, ar_width); 
@@ -37,18 +37,16 @@ int main() {
 		else if (value == 2) {
 			int ar_hight = 15;
 			int ar_width = 30;
-			Load(h, 40, 3);
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 16, 3, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 16, 5, 0); // побочная рамка
 			CreateMass(h, ar, ar_hight, ar_width);
 			GamePlay(h, ar, ar_hight, ar_width);
 		}
 		if (value == 3) {
 			int ar_hight = 20;
 			int ar_width = 40;
-			Load(h, 40, 3);
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 16, 3, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 16, 5, 0); // побочная рамка
 			CreateMass(h, ar, ar_hight, ar_width);
 			GamePlay(h, ar, ar_hight, ar_width);
 		}
