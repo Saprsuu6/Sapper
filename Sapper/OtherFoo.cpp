@@ -163,25 +163,17 @@ bool Start(int &enter, int &space, int &esc) {
 		return false;
 }
 
-void LastMessage(int**& ar) {
-	int message = MessageBoxA(NULL, "Вы хотите начать заново?", "Вы подорвались на мине", MB_YESNO);
-	delete[]ar;
-	if (message == IDYES) {
-		system("cls");
-		main();
-	}
-	else
-		system("taskkill /im Sapper.exe");
-}
-
-void CreateMass(HANDLE &h, int**&ar, int ar_hight, int ar_width) {
+void CreateMass(HANDLE &h, int**&ar, int**&ar_flags, int ar_hight, int ar_width) {
 	ar = new int*[ar_hight];
 	for (int i = 0; i < ar_hight; i++)
 		ar[i] = new int[ar_width];
-	FillMass(h, ar, ar_hight, ar_width);
+	ar_flags = new int* [ar_hight];
+	for (int i = 0; i < ar_hight; i++)
+		ar_flags[i] = new int[ar_width];
+	FillMass(h, ar, ar_flags, ar_hight, ar_width);
 }
 
-void FillMass(HANDLE& h, int**&ar, int ar_hight, int ar_width) {
+void FillMass(HANDLE& h, int**&ar, int**& ar_flags, int ar_hight, int ar_width) {
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
@@ -189,6 +181,7 @@ void FillMass(HANDLE& h, int**&ar, int ar_hight, int ar_width) {
 				ar[i][j] = 9; // бомба
 			else
 				ar[i][j] = 0; // пустота
+			ar_flags[i][j] = 0;
 		}
 	}
 	ShowMass(h, ar, ar_hight, ar_width);
@@ -204,7 +197,7 @@ void ShowMass(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 	}
 }
 
-void ShowAll(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
 	COORD show_all{ 1,1 };
 	for (int i = 0; i < ar_hight; i++) {
 		SetConsoleCursorPosition(h, show_all);
@@ -222,56 +215,83 @@ void ShowAll(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 		}
 		show_all.Y++;
 	}
-	LastMessage(ar);
+	LastMessage(ar, ar_flags, ar_hight);
 }
 
-//void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
-//	COORD empty{ x,y };
-//	for (int i = y - 1; i <= y + 3; i++) { // поиск пустоты в радиусе 3х3
-//		SetConsoleCursorPosition(h, empty);
-//		for (int j = x - 1; j <= x + 5; j++) { // поиск пустоты в радиусе 3х3
-//			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width) {
-//				if (ar[i][j] == 0) {
-//					ar[i][j] = 11;
-//					cout << " ";
-//				}
-//				else if (ar[i][j] > 0 && ar[i][j] < 9) {
-//					Choose_color(h, ar[i][j]);
-//					cout << ar[i][j];
-//				}
-//				else {
-//					SetConsoleTextAttribute(h, 14);
-//					cout << char(4);
-//				}
-//			}
-//		}
-//		empty.Y++;
-//	}
-//}
-
-int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
-	
+void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
+	COORD empty{ x,y };
+	for (int i = y - 1; i <= y + 3; i++) { // поиск пустоты в радиусе 3х3
+		SetConsoleCursorPosition(h, empty);
+		for (int j = x - 1; j <= x + 5; j++) { // поиск пустоты в радиусе 3х3
+			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width) {
+				if (ar[i][j] == 0) {
+					ar[i][j] = 11;
+					cout << " ";
+				}
+				else if (ar[i][j] > 0 && ar[i][j] < 9) {
+					Choose_color(h, ar[i][j]);
+					cout << ar[i][j];
+				}
+				else {
+					SetConsoleTextAttribute(h, 14);
+					cout << char(4);
+				}
+			}
+		}
+		empty.Y++;
+	}
 }
 
 void SearchBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
-	int count = 0;
+	int count_b = 0;
+	int count = 0; 
 	for (int i = y - 1; i <= y + 1; i++) { // поиск бомбы в радиусе 3х3
 		for (int j = x - 1; j <= x + 1; j++) { // поиск бомбы в радиусе 3х3
-			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width && ar[i][j] == 9)
+			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width && ar[i][j] == 9) 
 				count++;
 		}
 	}
 	if (count > 0)
 		Write(h, ar, count, x, y);
-	else if (count == 0)
-		OpenEmpty(h, ar, ar_hight, ar_width, x, y);
-		//OpenEmpty(h, ar, ar_hight, ar_width, x - 2, y - 1);
+	/*else if (count == 0)
+		OpenEmpty(h, ar, ar_hight, ar_width, x - 2, y - 1);*/
 }
 
 void Write(HANDLE& h, int**& ar, int count, int x, int y) {
 	ar[y][x] = count;
 	Choose_color(h, count);
 	cout << count;
+}
+
+void LastMessage(int**& ar, int**& ar_flags, int ar_hight) {
+	int message = MessageBoxA(NULL, "Вы хотите начать заново?", "Вы подорвались на мине", MB_YESNO);
+	DellMass(ar, ar_flags, ar_hight);
+	if (message == IDYES) {
+		system("cls");
+		main();
+	}
+	else
+		system("taskkill /im Sapper.exe");
+}
+
+void WinnerMessage(int**& ar, int**& ar_flags, int ar_hight) {
+	int message = MessageBoxA(NULL, "Вы хотите начать заново?", "Вы нашли все мины", MB_YESNO);
+	DellMass(ar, ar_flags, ar_hight);
+	if (message == IDYES) {
+		system("cls");
+		main();
+	}
+	else
+		system("taskkill /im Sapper.exe");
+}
+
+void DellMass(int**& ar, int**& ar_flags, int ar_hight) {
+	for (int i = 0; i < ar_hight; i++) {
+		delete[] ar[i];
+		delete[] ar_flags[i];
+	}
+	delete[]ar;
+	delete[]ar_flags;
 }
 
 int AllBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
@@ -285,7 +305,18 @@ int AllBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 	return count_bomb;
 }
 
-void ShowText(HANDLE& h, int**& ar, int ar_hight, int ar_width, int color) {
+int AllFlags(HANDLE& h, int**& ar_flags, int ar_hight, int ar_width) {
+	int count_flags = 0;
+	for (int i = 0; i < ar_hight; i++) {
+		for (int j = 0; j < ar_width; j++) {
+			if (ar_flags[i][j] == 10)
+				count_flags++;
+		}
+	}
+	return count_flags;
+}
+
+void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width, int color) {
 	setlocale(0, "RUS");
 	COORD text{ ar_width + 6,1 };
 	SetConsoleCursorPosition(h, text);
@@ -294,8 +325,9 @@ void ShowText(HANDLE& h, int**& ar, int ar_hight, int ar_width, int color) {
 	text.Y++;
 	SetConsoleCursorPosition(h, text);
 	SetConsoleTextAttribute(h, color);
-	cout << "Флажки: " << AllFlags(h, ar, ar_hight, ar_width) << " " << char(3) << " ";
+	printf("Флажки: %03d ", AllFlags(h, ar_falgs, ar_hight, ar_width));
 	setlocale(0, "C");
+	cout << char(3);
 }
 
 void Choose_color(HANDLE& h, int count) {
@@ -317,48 +349,31 @@ void Choose_color(HANDLE& h, int count) {
 		SetConsoleTextAttribute(h, 8);
 }
 
-void SaveMode(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
-	if ((ar[y][x] == 0 || ar[y][x] == 9) && ar[y][x] != 11) {
-		ar[y][x] = 10;
-		SetConsoleTextAttribute(h, 10);
-		cout << char(20);
-	}
-	else if (ar[y][x] == 10) {
-		ar[y][x] = 0;
-		SetConsoleTextAttribute(h, 14);
-		cout << char(4);
-	}
-}
-
-int AllFlags(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-	int count_flags = 0;
-	for (int i = 0; i < ar_hight; i++) {
-		for (int j = 0; j < ar_width; j++) {
-			if (ar[i][j] == 10)
-				count_flags++;
+void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y) {
+	if (ar[y][x] != 1 && ar[y][x] != 2 && ar[y][x] != 3 && ar[y][x] != 4 && ar[y][x] != 5
+		&& ar[y][x] != 6 && ar[y][x] != 7 && ar[y][x] != 8) {
+		if ((ar[y][x] == 0 || ar[y][x] == 9 || ar[y][x] != 11) && ar_flags[y][x] != 10) {
+			ar_flags[y][x] = 10;
+			SetConsoleTextAttribute(h, 10);
+			cout << char(20);
+		}
+		else if (ar_flags[y][x] == 10) {
+			ar_flags[y][x] = 0;
+			SetConsoleTextAttribute(h, 14);
+			cout << char(4);
 		}
 	}
-	return count_flags;
 }
 
-void WinnerMessage(int**& ar) {
-	int message = MessageBoxA(NULL, "Вы хотите начать заново?", "Вы нашлы на мине", MB_YESNO);
-	delete[]ar;
-	if (message == IDYES) {
-		system("cls");
-		main();
-	}
-	else
-		system("taskkill /im Sapper.exe");
+void BombsFlags(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
+	int allF = AllFlags(h, ar, ar_hight, ar_width);
+	int allB = AllBomb(h, ar, ar_hight, ar_width);
+	if (allB == allF)
+		WinnerMessage(ar, ar_flags, ar_hight);
 }
 
-void BombsFlags(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-	if (AllFlags(h, ar, ar_hight, ar_width) == AllBomb(h, ar, ar_hight, ar_width))
-		WinnerMessage(ar);
-}
-
-void GamePlay(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-	ShowText(h, ar, ar_hight, ar_width, 4);
+void GamePlay(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
+	ShowText(h, ar, ar_flags, ar_hight, ar_width, 4);
 	COORD mouse;
 	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -373,10 +388,10 @@ void GamePlay(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 			int x = mouse.X - 1;
 			int y = mouse.Y - 1;
 			if (all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED
-				&& mouse.X > 0 && mouse.X < ar_width + 1 && mouse.Y > 0 && mouse.Y < ar_hight + 1) {
-				if (ar[y][x] == 9) // если нажал на бомбу
-					ShowAll(h, ar, ar_hight, ar_width);
-				else if (ar[y][x] == 0) {// если нажал на пусто поле
+				&& (mouse.X > 0 || mouse.X < ar_width + 1 || mouse.Y > 0 || mouse.Y < ar_hight + 1)) {
+				if (ar[y][x] == 9 && ar_flags[y][x] != 10) // если нажал на бомбу
+					ShowAll(h, ar, ar_flags, ar_hight, ar_width);
+				else if (ar[y][x] == 0 && ar_flags[y][x] != 10) {// если нажал на пусто поле
 					SetConsoleCursorPosition(h, mouse);
 					SearchBomb(h, ar, ar_hight, ar_width, x, y);
 				}
@@ -384,12 +399,13 @@ void GamePlay(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 			else if (all_events[i].Event.MouseEvent.dwButtonState == RIGHTMOST_BUTTON_PRESSED
 				&& mouse.X > 0 && mouse.X < ar_width + 1 && mouse.Y > 0 && mouse.Y < ar_hight + 1) {
 				SetConsoleCursorPosition(h, mouse);
-				SaveMode(h, ar, ar_hight, ar_width, x, y);
+				SaveMode(h, ar, ar_flags, ar_hight, ar_width, x, y);
 				if (ar[y][x] != 11)
-					ShowText(h, ar, ar_hight, ar_width, 10);
+					ShowText(h, ar, ar_flags, ar_hight, ar_width, 10);
 			}
 			else
-				ShowText(h, ar, ar_hight, ar_width, 4);
+				ShowText(h, ar, ar_flags, ar_hight, ar_width, 4);
+			BombsFlags(h, ar, ar_flags, ar_hight, ar_width);
 		}
 	}
 }
