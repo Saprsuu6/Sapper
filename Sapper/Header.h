@@ -34,4 +34,5 @@ void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width,
 int AllFlags(HANDLE& h, int**& ar, int ar_hight, int ar_width);
 void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width);
 void DellMass(int**& ar, int**& ar_flags, int ar_hight);
+int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width);
 int main();

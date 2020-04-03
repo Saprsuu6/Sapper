@@ -220,11 +220,11 @@ void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) 
 
 void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
 	COORD empty{ x,y };
-	for (int i = y - 1; i <= y + 3; i++) { // поиск пустоты в радиусе 3х3
+	for (int i = y - 1; i <= y + 1; i++) { // поиск пустоты в радиусе 3х3
 		SetConsoleCursorPosition(h, empty);
-		for (int j = x - 1; j <= x + 5; j++) { // поиск пустоты в радиусе 3х3
+		for (int j = x - 1; j <= x + 1; j++) { // поиск пустоты в радиусе 3х3
 			if (i >= 0 && j >= 0 && i < ar_hight && j < ar_width) {
-				if (ar[i][j] == 0) {
+				if (ar[i][j] == 0 || ar[i][j] == 11) {
 					ar[i][j] = 11;
 					cout << " ";
 				}
@@ -232,7 +232,7 @@ void OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) {
 					Choose_color(h, ar[i][j]);
 					cout << ar[i][j];
 				}
-				else {
+				else if (ar[i][j] == 9) {
 					SetConsoleTextAttribute(h, 14);
 					cout << char(4);
 				}
@@ -253,8 +253,8 @@ void SearchBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width, int x, int y) 
 	}
 	if (count > 0)
 		Write(h, ar, count, x, y);
-	/*else if (count == 0)
-		OpenEmpty(h, ar, ar_hight, ar_width, x - 2, y - 1);*/
+	else if (count == 0)
+		OpenEmpty(h, ar, ar_hight, ar_width, x, y);
 }
 
 void Write(HANDLE& h, int**& ar, int count, int x, int y) {
@@ -365,10 +365,20 @@ void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width,
 	}
 }
 
+int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
+	int open_empty = 0;
+	for (int i = 0; i < ar_hight; i++) {
+		for (int j = 0; j < ar_width; j++) {
+			if (ar[i][j] != 9 && ar[i][j] != 0)
+				open_empty++;
+		}
+	}
+	return open_empty;
+}
+
 void BombsFlags(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
-	int allF = AllFlags(h, ar, ar_hight, ar_width);
-	int allB = AllBomb(h, ar, ar_hight, ar_width);
-	if (allB == allF)
+	int count_empty = ar_hight * ar_width - AllBomb(h, ar, ar_hight, ar_width);
+	if (count_empty == OpenEmpty(h, ar, ar_hight, ar_width))
 		WinnerMessage(ar, ar_flags, ar_hight);
 }
 
