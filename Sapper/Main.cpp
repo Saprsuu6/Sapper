@@ -31,7 +31,7 @@ int main() {
 			int ar_hight = 10;
 			int ar_width = 20;
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 5, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); 
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width);
 		}
@@ -39,7 +39,7 @@ int main() {
 			int ar_hight = 15;
 			int ar_width = 30;
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 5, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); ;
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width);
 		}
@@ -47,7 +47,7 @@ int main() {
 			int ar_hight = 20;
 			int ar_width = 40;
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 5, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); ;
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width);
 		}
