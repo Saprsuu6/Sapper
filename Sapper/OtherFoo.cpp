@@ -176,7 +176,7 @@ void FillMass(HANDLE& h, int**&ar, int**& ar_flags, int ar_hight, int ar_width) 
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
-			if (random > 80)
+			if (random > 95)
 				ar[i][j] = 9; // бомба
 			else
 				ar[i][j] = 0; // пустота
@@ -318,8 +318,8 @@ void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width,
 		&& ar[y][x] != 6 && ar[y][x] != 7 && ar[y][x] != 8) {
 		if ((ar[y][x] == 0 || ar[y][x] == 9 || ar[y][x] != 11) && ar_flags[y][x] != 10) {
 			ar_flags[y][x] = 10;
-			SetConsoleTextAttribute(h, 10);
-			cout << char(20);
+			SetConsoleTextAttribute(h, 13);
+			cout << char(4);
 		}
 		else if (ar_flags[y][x] == 10) {
 			ar_flags[y][x] = 0;
@@ -330,19 +330,18 @@ void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width,
 }
 
 int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-	int open_empty = 0;
+	int if_empty = 0;
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
-			if (ar[i][j] != 9 && ar[i][j] != 0)
-				open_empty++;
+			if (ar[i][j] == 0)
+				if_empty++;
 		}
 	}
-	return open_empty;
+	return if_empty;
 }
 
-void BombsFlags(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
-	int count_empty = ar_hight * ar_width - AllBomb(h, ar, ar_hight, ar_width);
-	if (count_empty == OpenEmpty(h, ar, ar_hight, ar_width))
+void End(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
+	if (OpenEmpty(h, ar, ar_hight, ar_width) == 0)
 		WinnerMessage(ar, ar_flags, ar_hight);
 }
 
@@ -411,7 +410,7 @@ void GamePlay(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width)
 			}
 			else
 				ShowText(h, ar, ar_flags, ar_hight, ar_width, 4);
-			BombsFlags(h, ar, ar_flags, ar_hight, ar_width);
+			End(h, ar, ar_flags, ar_hight, ar_width);
 		}
 	}
 }

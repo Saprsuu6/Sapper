@@ -27,7 +27,7 @@ void WriteNum(HANDLE& h, int count, int x, int y);
 void LastMessage(int**& ar, int**& ar_flags, int ar_hight);
 int AllBomb(HANDLE& h, int**& ar, int ar_hight, int ar_width);
 void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y);
-void BombsFlags(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width);
+void End(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width);
 void WinnerMessage(int**& ar, int**& ar_flags, int ar_hight);
 void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width, int color);
 int AllFlags(HANDLE& h, int**& ar, int ar_hight, int ar_width);
