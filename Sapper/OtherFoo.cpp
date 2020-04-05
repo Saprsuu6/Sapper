@@ -2,6 +2,7 @@
 		CYAN = 11, PINK = 13, GREY = 8, DARK_YELLOW = 6, LIGHT_YELLOW = 14,
 		DARK_GREEN = 2, DARK_PINK = 5;*/
 /*int EMPTY = 0, BOMB = 9, FLAG = 10, OTEREMPTY = 11;*/
+//размерность char = 255.
 // dont forget about delete [] ar
 #include "Header.h"
 
@@ -12,8 +13,67 @@ void Setings(HANDLE &h) {
 	info.bVisible = false;
 	info.dwSize = 100;
 	SetConsoleCursorInfo(h, &info);
-	system("color 32");
 	srand(time(0));
+}
+
+void MusikGameOver() {
+	Beep(587, 500);
+	Beep(523, 500);
+	Beep(494, 500);
+	for (int i = 0; i < 5; i++)
+		Beep(466, 100);
+}
+
+void MusikStart() {
+	Beep(494, 100);
+	Beep(523, 100);
+	Beep(587, 100);
+}
+
+void MusikWin() {
+	Beep(494, 500);
+	for (int i = 0; i < 2; i++)
+		Beep(523, 100);
+	Beep(523, 100);
+	Beep(880, 500);
+}
+
+void Sponsors(HANDLE& h, string sponsor, COORD text, int color) {
+	SetConsoleTextAttribute(h, color);
+	for (int i = 0; i < size(sponsor); i++) {
+		for (int j = 65; j < 123; j++) {
+			SetConsoleCursorPosition(h, text);
+			if (char(j) == sponsor[i]) {
+				text.X++;
+				cout << sponsor[i];
+				break;
+			}
+			cout << char(j);
+			Sleep(10);
+		}
+	}
+}
+
+void Sponsor(HANDLE& h, int green, int red) {
+	COORD text{ 38,7 };
+	SetConsoleCursorPosition(h, text);
+	SetConsoleTextAttribute(h, red);
+	setlocale(0, "RUS");
+	cout << "Спонсоры";
+	setlocale(0, "C");
+	string sponsor = "GameXY";
+	string sponsor2 = "BrainGameX";
+	string sponsor3 = "EASports";
+	text.X++;
+	text.Y += 2;
+	Sponsors(h, sponsor, text, green);
+	text.X -= 2;
+	text.Y++;
+	Sponsors(h, sponsor2, text, green);
+	text.X++;
+	text.Y++;
+	Sponsors(h, sponsor3, text, green);
+	Sleep(500);
 }
 
 void Draw(HANDLE &h, int colors, int x, int y, int width, int hight, char ch) {
@@ -75,39 +135,18 @@ void DrawSet() {
 	cout << "Легко - 1\nНормально - 2\nСложно - 3\nВведите: ";
 }
 
-void Load(HANDLE &h, int width, int hight) {
-	COORD frame{ 22,8 };
-	for (int i = 0; i < hight; i++) {
-		SetConsoleCursorPosition(h, frame);
-		for (int j = 0; j < width; j++) {
-			if (i == 0 && j == 0)
-				cout << char(218);
-			else if (i == hight - 1 && j == 0)
-				cout << char(192);
-			else if (i == 0 && j == width - 1)
-				cout << char(191);
-			else if (i == hight - 1 && j == width - 1)
-				cout << char(217);
-			else if (i == 0 || i == hight - 1)
-				cout << char(196);
-			else if (j == 0 || j == width - 1)
-				cout << char(179);
-			else
-				cout << " ";
-		}
-		frame.Y++;
-	}
-	frame.X = 37, frame.Y = 9;
-	SetConsoleCursorPosition(h, frame);
+void Load(HANDLE &h, int width) {
+	COORD load{ 37,9 };
+	SetConsoleCursorPosition(h, load);
 	setlocale(0, "RUS");
 	cout << "Загрузка...";
 	setlocale(0, "C");
-	frame.X = 23, frame.Y = 9;
-	SetConsoleCursorPosition(h, frame);
+	load.X = 23, load.Y = 9;
+	SetConsoleCursorPosition(h, load);
 	for (int i = 0; i < width - 2; i++) {
 		int random = rand() % 200 + 50;
-		cout << char(178);
-		frame.X++;
+		cout << char(219);
+		load.X++;
 		Sleep(random);
 	}
 	system("cls");
@@ -176,33 +215,22 @@ void FillMass(HANDLE& h, int**&ar, int**& ar_flags, int ar_hight, int ar_width) 
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
-			if (random > 95)
+			if (random > 80)
 				ar[i][j] = 9; // бомба
 			else
 				ar[i][j] = 0; // пустота
 			ar_flags[i][j] = 0;
 		}
 	}
-	//ShowMass(h, ar, ar_hight, ar_width);
 }
 
-//void ShowMass(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
-//	COORD c{ 1,1 };
-//	for (int i = 0; i < ar_hight; i++) {
-//		SetConsoleCursorPosition(h, c);
-//		for (int j = 0; j < ar_width; j++)
-//			cout << ar[i][j];
-//		c.Y++;
-//	}
-//}
-
-void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
+void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int color) {
 	COORD show_all{ 1,1 };
 	for (int i = 0; i < ar_hight; i++) {
 		SetConsoleCursorPosition(h, show_all);
 		for (int j = 0; j < ar_width; j++) {
 			if (ar[i][j] == 9) {
-				SetConsoleTextAttribute(h, 6);
+				SetConsoleTextAttribute(h, color);
 				cout << char(15);
 			}
 			else if (ar[i][j] > 0 && ar[i][j] < 9) {
@@ -214,6 +242,7 @@ void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) 
 		}
 		show_all.Y++;
 	}
+	MusikGameOver();
 	LastMessage(ar, ar_flags, ar_hight);
 }
 
@@ -280,15 +309,15 @@ int AllFlags(HANDLE& h, int**& ar_flags, int ar_hight, int ar_width) {
 	return count_flags;
 }
 
-void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width, int color) {
+void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width, int darkred, int cyan) {
 	setlocale(0, "RUS");
 	COORD text{ ar_width + 6,1 };
 	SetConsoleCursorPosition(h, text);
-	SetConsoleTextAttribute(h, 11);
+	SetConsoleTextAttribute(h, cyan);
 	cout << "Все бомы: " << AllBomb(h, ar, ar_hight, ar_width);
 	text.Y++;
 	SetConsoleCursorPosition(h, text);
-	SetConsoleTextAttribute(h, color);
+	SetConsoleTextAttribute(h, darkred);
 	printf("Флажки: %03d ", AllFlags(h, ar_falgs, ar_hight, ar_width));
 	setlocale(0, "C");
 	cout << char(3);
@@ -313,17 +342,17 @@ void Choose_color(HANDLE& h, int count) {
 		SetConsoleTextAttribute(h, 8);
 }
 
-void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y) {
+void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y, int pink, int yellow) {
 	if (ar[y][x] != 1 && ar[y][x] != 2 && ar[y][x] != 3 && ar[y][x] != 4 && ar[y][x] != 5
 		&& ar[y][x] != 6 && ar[y][x] != 7 && ar[y][x] != 8) {
 		if ((ar[y][x] == 0 || ar[y][x] == 9 || ar[y][x] != 11) && ar_flags[y][x] != 10) {
 			ar_flags[y][x] = 10;
-			SetConsoleTextAttribute(h, 13);
+			SetConsoleTextAttribute(h, pink);
 			cout << char(4);
 		}
 		else if (ar_flags[y][x] == 10) {
 			ar_flags[y][x] = 0;
-			SetConsoleTextAttribute(h, 14);
+			SetConsoleTextAttribute(h, yellow);
 			cout << char(4);
 		}
 	}
@@ -341,14 +370,16 @@ int OpenEmpty(HANDLE& h, int**& ar, int ar_hight, int ar_width) {
 }
 
 void End(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
-	if (OpenEmpty(h, ar, ar_hight, ar_width) == 0)
+	if (OpenEmpty(h, ar, ar_hight, ar_width) == 0) {
+		MusikWin();
 		WinnerMessage(ar, ar_flags, ar_hight);
+	}
 }
 
 void Open(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int& x, int& y) {
 	int count = 0;
 	if (ar[y][x] == 9 && ar_flags[y][x] != 10) // если нажал на бомбу
-		ShowAll(h, ar, ar_flags, ar_hight, ar_width);
+		ShowAll(h, ar, ar_flags, ar_hight, ar_width, 6);
 	else if (ar[y][x] == 0 && ar_flags[y][x] != 10 && ar[y][x] != 11) { // если нажал на пусто поле
 		int result = SearchBomb(h, ar, ar_hight, ar_width, x, y, count);
 		if (result == 0) {
@@ -383,7 +414,7 @@ void WriteNum(HANDLE& h, int count, int x, int y) {
 }
 
 void GamePlay(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width) {
-	ShowText(h, ar, ar_flags, ar_hight, ar_width, 4);
+	ShowText(h, ar, ar_flags, ar_hight, ar_width, 4, 11);
 	COORD mouse;
 	HANDLE h_in = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_in, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -404,12 +435,12 @@ void GamePlay(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width)
 			else if (all_events[i].Event.MouseEvent.dwButtonState == RIGHTMOST_BUTTON_PRESSED
 				&& mouse.X > 0 && mouse.X < ar_width + 1 && mouse.Y > 0 && mouse.Y < ar_hight + 1) {
 				SetConsoleCursorPosition(h, mouse);
-				SaveMode(h, ar, ar_flags, ar_hight, ar_width, x, y);
+				SaveMode(h, ar, ar_flags, ar_hight, ar_width, x, y, 13, 14);
 				if (ar[y][x] != 11)
-					ShowText(h, ar, ar_flags, ar_hight, ar_width, 10);
+					ShowText(h, ar, ar_flags, ar_hight, ar_width, 10, 11);
 			}
 			else
-				ShowText(h, ar, ar_flags, ar_hight, ar_width, 4);
+				ShowText(h, ar, ar_flags, ar_hight, ar_width, 4, 11);
 			End(h, ar, ar_flags, ar_hight, ar_width);
 		}
 	}
