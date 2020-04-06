@@ -215,7 +215,7 @@ void FillMass(HANDLE& h, int**&ar, int**& ar_flags, int ar_hight, int ar_width) 
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
-			if (random > 95)
+			if (random > 85)
 				ar[i][j] = 9; // бомба
 			else
 				ar[i][j] = 0; // пустота
