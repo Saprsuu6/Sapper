@@ -1,10 +1,11 @@
-#include <iostream>
-#include <Windows.h>
-#include <ctime>
-#include <conio.h>
-#include <string>
-using namespace std;
+#include <iostream> // библиотека для cout and setlocale 
+#include <Windows.h> // библиотека для работы с консолью
+#include <ctime> // для использования постоянного рандома чисел
+#include <conio.h> // для использования функции отслеживания нажатия 
+#include <string> // для работы с типом данных string
+using namespace std; // использование пространства имён std
 
+// прототипы функций
 void Setings(HANDLE &h);
 void Draw(HANDLE &h, int colors, int x, int y, int width, int hight, char ch);
 void Instruction();

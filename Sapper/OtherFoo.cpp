@@ -2,21 +2,21 @@
 		CYAN = 11, PINK = 13, GREY = 8, DARK_YELLOW = 6, LIGHT_YELLOW = 14,
 		DARK_GREEN = 2, DARK_PINK = 5;*/
 /*int EMPTY = 0, BOMB = 9, FLAG = 10, OTEREMPTY = 11;*/
-//размерность char = 255.
+// диапазон char = 255.
 // dont forget about delete [] ar
-#include "Header.h"
+#include "Header.h" // включение заголовочного файла
 
-void Setings(HANDLE &h) {
-	system("mode con cols=87 lines=23");
-	system("title Sapper");
-	CONSOLE_CURSOR_INFO info;
-	info.bVisible = false;
-	info.dwSize = 100;
-	SetConsoleCursorInfo(h, &info);
-	srand(time(0));
+void Setings(HANDLE &h) { // настройки проекта
+	system("mode con cols=87 lines=23"); // настройки окна
+	system("title Sapper"); // настройки названия
+	CONSOLE_CURSOR_INFO info; // информация о размерах и виде курсора
+	info.bVisible = false; // установка неотображаемости курсора
+	info.dwSize = 100; // установка размера кусора (без него всё откидывается)
+	SetConsoleCursorInfo(h, &info); // устанавливает размер и вид курсора
+	srand(time(0)); // установка вечного отсчёта от 00:00:00 1970 года
 }
 
-void MusikGameOver() {
+void MusikGameOver() { 
 	Beep(587, 500);
 	Beep(523, 500);
 	Beep(494, 500);
@@ -215,7 +215,7 @@ void FillMass(HANDLE& h, int**&ar, int**& ar_flags, int ar_hight, int ar_width) 
 	for (int i = 0; i < ar_hight; i++) {
 		for (int j = 0; j < ar_width; j++) {
 			int random = rand() % 101;
-			if (random > 80)
+			if (random > 95)
 				ar[i][j] = 9; // бомба
 			else
 				ar[i][j] = 0; // пустота
