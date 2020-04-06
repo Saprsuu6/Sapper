@@ -231,7 +231,7 @@ void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, 
 		for (int j = 0; j < ar_width; j++) {
 			if (ar[i][j] == 9) {
 				SetConsoleTextAttribute(h, color);
-				cout << char(15);
+				cout << char(249);
 			}
 			else if (ar[i][j] > 0 && ar[i][j] < 9) {
 				Choose_color(h, ar[i][j]);
