@@ -8,10 +8,10 @@ int main() {
 	int esc = 27;
 	HANDLE h = GetStdHandle(-11);
 	Setings(h);
-	if (first) {
-		Sponsor(h, 10, 4);
-		first = false;
-	}
+	//if (first) {
+	//	Sponsor(h, 10, 4);
+	//	first = false;
+	//}
 	system("cls");
 	system("color 32");
 	Draw(h, 14, 0, 0, 40, 20, 4); // главная рамка

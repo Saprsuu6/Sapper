@@ -231,7 +231,7 @@ void ShowAll(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, 
 		for (int j = 0; j < ar_width; j++) {
 			if (ar[i][j] == 9) {
 				SetConsoleTextAttribute(h, color);
-				cout << char(249);
+				cout << char(2);
 			}
 			else if (ar[i][j] > 0 && ar[i][j] < 9) {
 				Choose_color(h, ar[i][j]);
@@ -342,13 +342,13 @@ void Choose_color(HANDLE& h, int count) {
 		SetConsoleTextAttribute(h, 8);
 }
 
-void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y, int pink, int yellow) {
+void SaveMode(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width, int x, int y, int green, int yellow) {
 	if (ar[y][x] != 1 && ar[y][x] != 2 && ar[y][x] != 3 && ar[y][x] != 4 && ar[y][x] != 5
 		&& ar[y][x] != 6 && ar[y][x] != 7 && ar[y][x] != 8) {
 		if ((ar[y][x] == 0 || ar[y][x] == 9 || ar[y][x] != 11) && ar_flags[y][x] != 10) {
 			ar_flags[y][x] = 10;
-			SetConsoleTextAttribute(h, pink);
-			cout << char(4);
+			SetConsoleTextAttribute(h, green);
+			cout << char(20);
 		}
 		else if (ar_flags[y][x] == 10) {
 			ar_flags[y][x] = 0;
@@ -435,7 +435,7 @@ void GamePlay(HANDLE& h, int**& ar, int**& ar_flags, int ar_hight, int ar_width)
 			else if (all_events[i].Event.MouseEvent.dwButtonState == RIGHTMOST_BUTTON_PRESSED
 				&& mouse.X > 0 && mouse.X < ar_width + 1 && mouse.Y > 0 && mouse.Y < ar_hight + 1) {
 				SetConsoleCursorPosition(h, mouse);
-				SaveMode(h, ar, ar_flags, ar_hight, ar_width, x, y, 13, 14);
+				SaveMode(h, ar, ar_flags, ar_hight, ar_width, x, y, 10, 14);
 				if (ar[y][x] != 11)
 					ShowText(h, ar, ar_flags, ar_hight, ar_width, 10, 11);
 			}
