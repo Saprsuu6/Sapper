@@ -16,20 +16,23 @@ void Setings(HANDLE &h) { // настройки проекта
 	srand(time(0)); // установка вечного отсчёта от 00:00:00 1970 года
 }
 
+// функция музыка для проигрыша
 void MusikGameOver() { 
-	Beep(587, 500);
+	Beep(587, 500); // первое значение - нота определённой октавы, второе частота звука
 	Beep(523, 500);
 	Beep(494, 500);
 	for (int i = 0; i < 5; i++)
 		Beep(466, 100);
 }
 
+// функция музыка для начала игры
 void MusikStart() {
 	Beep(494, 100);
 	Beep(523, 100);
 	Beep(587, 100);
 }
 
+// функция музыка для выигрыша
 void MusikWin() {
 	Beep(494, 500);
 	for (int i = 0; i < 2; i++)
@@ -38,44 +41,47 @@ void MusikWin() {
 	Beep(880, 500);
 }
 
+// функция показа заставки
 void Sponsors(HANDLE& h, string sponsor, COORD text, int color) {
-	SetConsoleTextAttribute(h, color);
-	for (int i = 0; i < size(sponsor); i++) {
-		for (int j = 65; j < 123; j++) {
-			SetConsoleCursorPosition(h, text);
-			if (char(j) == sponsor[i]) {
+	SetConsoleTextAttribute(h, color); // взятие цвета
+	for (int i = 0; i < size(sponsor); i++) { // количество литералов слова
+		for (int j = 65; j < 123; j++) { // АСКИ коды аглийских литералов и символа одного или двух
+			SetConsoleCursorPosition(h, text); // взятие координат
+			if (char(j) == sponsor[i]) { // если символ равен литералу слова
 				text.X++;
-				cout << sponsor[i];
-				break;
+				cout << sponsor[i]; // показ правильного литерала
+				break; // выход массива
 			}
-			cout << char(j);
-			Sleep(10);
+			cout << char(j); // случайного сивола в этом диапазоне
+			Sleep(10); 
 		}
 	}
 }
 
+// функия показа заставки
 void Sponsor(HANDLE& h, int green, int red) {
-	COORD text{ 38,7 };
+	COORD text{ 38,7 }; // показ по координатам
 	SetConsoleCursorPosition(h, text);
-	SetConsoleTextAttribute(h, red);
+	SetConsoleTextAttribute(h, red); // красным цветом
 	setlocale(0, "RUS");
 	cout << "Спонсоры";
 	setlocale(0, "C");
-	string sponsor = "GameXY";
-	string sponsor2 = "BrainGameX";
-	string sponsor3 = "EASports";
+	string sponsor = "GameXY"; // первый текст
+	string sponsor2 = "BrainGameX"; // второй текст
+	string sponsor3 = "EASports"; // третий текст
 	text.X++;
 	text.Y += 2;
-	Sponsors(h, sponsor, text, green);
+	Sponsors(h, sponsor, text, green); // вызов функции показа
 	text.X -= 2;
 	text.Y++;
-	Sponsors(h, sponsor2, text, green);
+	Sponsors(h, sponsor2, text, green); // вызов функции показа
 	text.X++;
 	text.Y++;
-	Sponsors(h, sponsor3, text, green);
+	Sponsors(h, sponsor3, text, green); // вызов функции показа
 	Sleep(500);
 }
 
+// функция рисования рамки
 void Draw(HANDLE &h, int colors, int x, int y, int width, int hight, char ch) {
 	COORD frame{ x, y };
 	SetConsoleTextAttribute(h, colors);
