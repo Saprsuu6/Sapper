@@ -320,7 +320,7 @@ void ShowText(HANDLE& h, int**& ar, int**& ar_falgs, int ar_hight, int ar_width,
 	COORD text{ ar_width + 6,1 };
 	SetConsoleCursorPosition(h, text);
 	SetConsoleTextAttribute(h, cyan);
-	cout << "Все бомы: " << AllBomb(h, ar, ar_hight, ar_width);
+	cout << "Все бомбы: " << AllBomb(h, ar, ar_hight, ar_width);
 	text.Y++;
 	SetConsoleCursorPosition(h, text);
 	SetConsoleTextAttribute(h, darkred);
