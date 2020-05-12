@@ -36,7 +36,7 @@ int main() {
 			int ar_hight = 10; // переменная установки высоты сложности 1
 			int ar_width = 20; // переменная установки ширины сложности 1
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 16, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); // создание массива
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width); // гланый геймплей
 		}
@@ -44,7 +44,7 @@ int main() {
 			int ar_hight = 15; // переменная установки высоты сложности 2
 			int ar_width = 30; // переменная установки ширины сложности 2
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 16, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); ;
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width);
 		}
@@ -52,7 +52,7 @@ int main() {
 			int ar_hight = 20; // переменная установки высоты сложности 3
 			int ar_width = 40; // переменная установки ширины сложности 3
 			Draw(h, 14, 0, 0, ar_width + 2, ar_hight + 2, 4); // главная рамка
-			Draw(h, 14, ar_width + 5, 0, 15, 4, 0); // побочная рамка
+			Draw(h, 14, ar_width + 5, 0, 16, 4, 0); // побочная рамка
 			CreateMass(h, ar, ar_flags, ar_hight, ar_width); ;
 			GamePlay(h, ar, ar_flags, ar_hight, ar_width);
 		}
