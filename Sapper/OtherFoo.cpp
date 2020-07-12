@@ -117,14 +117,14 @@ void Instruction() {
 	cout << "Это число помогает понять, где находятся безопасные ячейки." << endl;
 	cout << " - Игра продолжается до тех пор, пока вы не откроете все не заминированные ячейки." << endl;
 	cout << "\n Удачной игры ;D";
-	cout << "\n\n\n\n\n\n\n\n\n\nНажмите ESCAPE для выхлда в гланое меню";
+	cout << "\n\n\n\n\n\n\n\n\nНажмите ESCAPE для выхода в главное меню";
 	int code = _getch();
 	if (code == 224)
 		code = _getch();
 	if (code == 27)
 		main();
-	else
-		system("cls");
+	/*else
+		system("cls");*/
 	Instruction();
 }
 
